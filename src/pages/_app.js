@@ -1,7 +1,7 @@
 import { Auth0Provider } from "@auth0/auth0-react"
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react"
-import { DefaultLayout } from "../layouts/DefaultLayout"
-import { AuthenticatedComponent } from "../components/AuthenticatedComponent"
+import { DefaultLayout } from "@/layouts/DefaultLayout"
+import { AuthenticatedComponent } from "@/components/AuthenticatedComponent"
 import theme from "../theme"
 import _ from "lodash"
 

@@ -6,7 +6,7 @@ With :
 - eslint / prettier / jest
 - husky / lint-staged
 
-& no server side code for the moment.
+No server side code for the moment.  
 
 ## Installation
 

@@ -7,10 +7,10 @@ import {
   Stack,
   useColorMode,
 } from "@chakra-ui/react"
-import { Container } from "../components/Container"
-import { Main } from "../components/Main"
+import { Container } from "@/components/Container"
+import { Main } from "@/components/Main"
 import { Header } from "./Header"
-import { LoadingSkeleton } from "../components/LoadingSkeleton"
+import { LoadingSkeleton } from "@/components/LoadingSkeleton"
 
 export const DefaultLayout = ({ children }) => {
   const { isLoading, isAuthenticated, error } = useAuth0()

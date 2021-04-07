@@ -1,4 +1,4 @@
-import { DefaultLayout } from "../layouts/DefaultLayout"
+import { DefaultLayout } from "@/layouts/DefaultLayout"
 
 const Index = () => (
   <div>todo</div>
