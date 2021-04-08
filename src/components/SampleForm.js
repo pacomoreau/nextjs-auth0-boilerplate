@@ -1,5 +1,5 @@
 import { Form } from "react-final-form"
-import { InputControl, TextareaControl } from "@/components/form-fields"
+import { InputControl, SelectControl, TextareaControl } from "@/components/form-fields"
 import { Box, Button, ButtonGroup } from "@chakra-ui/react"
 
 const onSubmit = async (values) => {
@@ -28,6 +28,15 @@ export const SampleForm = () => {
           <InputControl name="firstName" label="First Name" />
           <InputControl name="lastName" label="Last Name" />
           <TextareaControl name="notes" label="Notes" />
+          <SelectControl
+            name="colors"
+            label="Choose a color"
+            options={[
+              { label: "Red", value: "red" },
+              { label: "Green", value: "green" },
+              { label: "Blue", value: "blue" },
+            ]}
+          />
           <ButtonGroup spacing={4}>
             <Button isLoading={submitting} loadingText="Submitting" type="submit">
               Submit
