@@ -1,5 +1,9 @@
+import { SampleForm } from "@/components/SampleForm"
+
 const Create = () => (
-  <div>create : todo</div>
+  <>
+    <SampleForm />
+  </>
 )
 
 export default Create
