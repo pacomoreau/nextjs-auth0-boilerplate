@@ -1,7 +1,13 @@
 import { DefaultLayout } from "@/layouts/DefaultLayout"
+import { Link as ChakraLink } from "@chakra-ui/react"
+import Link from "next/link"
 
 const Index = () => (
-  <div>index : todo</div>
+  <>
+    <Link href="/create" passHref>
+      <ChakraLink>Create</ChakraLink>
+    </Link>
+  </>
 )
 
 Index.layout = DefaultLayout // optional, DefaultLayout by default
