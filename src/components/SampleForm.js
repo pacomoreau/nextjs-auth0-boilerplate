@@ -1,5 +1,11 @@
 import { Form } from "react-final-form"
-import { InputControl, SelectControl, TextareaControl } from "@/components/form-fields"
+import {
+  CheckboxControl,
+  InputControl,
+  MultiSelectControl,
+  SelectControl,
+  TextareaControl,
+} from "@/components/form-fields"
 import { Box, Button, ButtonGroup } from "@chakra-ui/react"
 
 const onSubmit = async (values) => {
@@ -37,6 +43,18 @@ export const SampleForm = () => {
               { label: "Blue", value: "blue" },
             ]}
           />
+          <MultiSelectControl
+            name="countries"
+            label="Choose some countries"
+            options={[
+              { label: "France", value: "FR" },
+              { label: "Belgium", value: "BE" },
+              { label: "Canada", value: "CA" },
+              { label: "United Kingdom", value: "UK" },
+              { label: "United States", value: "US" },
+            ]}
+          />
+          <CheckboxControl name="metal">Metal ?</CheckboxControl>
           <ButtonGroup spacing={4}>
             <Button isLoading={submitting} loadingText="Submitting" type="submit">
               Submit
