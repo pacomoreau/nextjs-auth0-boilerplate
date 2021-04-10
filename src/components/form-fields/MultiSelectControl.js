@@ -14,6 +14,7 @@ import {
   useMultiStyleConfig,
   useStyles,
   useTheme,
+  useColorMode,
   useColorModeValue,
   FormLabel,
 } from "@chakra-ui/react"
@@ -47,8 +48,28 @@ const chakraStyles = {
 
 const chakraComponents = {
   // Control components
-  Control: ({ children, innerRef, innerProps, isDisabled, isFocused }) => {
+  Control: ({
+    children,
+    innerRef,
+    innerProps,
+    isDisabled,
+    isFocused,
+    selectProps: { isInvalid },
+  }) => {
     const inputStyles = useMultiStyleConfig("Input")
+    const chakraTheme = useTheme()
+    const { colorMode } = useColorMode()
+    const isDark = colorMode === "dark"
+    let invalidStyles
+    if (isInvalid) {
+      const invalidColor = isDark ? chakraTheme.colors.red[300] : chakraTheme.colors.red[500]
+      invalidStyles = {
+        color: invalidColor,
+        borderColor: invalidColor,
+        boxShadow: `0 0 0 1px ${invalidColor}`,
+      }
+    }
+    console.log(chakraTheme.colors.red[500])
     return (
       <StylesProvider value={inputStyles}>
         <Flex
@@ -63,6 +84,7 @@ const chakraComponents = {
           {...innerProps}
           {...(isFocused && { "data-focus": true })}
           {...(isDisabled && { disabled: true })}
+          {...invalidStyles}
         >
           {children}
         </Flex>

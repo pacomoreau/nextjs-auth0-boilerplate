@@ -12,11 +12,27 @@ const onSubmit = async (values) => {
   console.log("submit", values)
 }
 
+const validateForm = (values) => {
+  const errors = {}
+
+  if (!values.lastName) {
+    errors.lastName = "Required"
+  }
+  if (!values.colors || values.colors.length === 0) {
+    errors.colors = "Required"
+  }
+  if (!values.countries || values.countries.length === 0) {
+    errors.countries = "Required"
+  }
+
+  return errors
+}
+
 export const SampleForm = () => {
   return (
     <Form
       onSubmit={onSubmit}
-      //validate={validate}
+      validate={validateForm}
       render={({ handleSubmit, form, errors, submitting, pristine, values }) => (
         <Box
           as="form"
