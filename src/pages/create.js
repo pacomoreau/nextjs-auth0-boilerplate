@@ -1,8 +1,8 @@
-import { SampleForm } from "@/components/SampleForm"
+import { SamplePostForm } from "@/components/SamplePostForm"
 
 const Create = () => (
   <>
-    <SampleForm />
+    <SamplePostForm />
   </>
 )
 

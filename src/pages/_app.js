@@ -2,8 +2,14 @@ import { Auth0Provider } from "@auth0/auth0-react"
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react"
 import { DefaultLayout } from "@/layouts/DefaultLayout"
 import { AuthenticatedComponent } from "@/components/AuthenticatedComponent"
+import { QueryClient, QueryClientProvider } from "react-query"
+import { ReactQueryDevtools } from "react-query/devtools"
+import { initAxios } from "../../axios.config"
 import theme from "../theme"
 import _ from "lodash"
+
+initAxios()
+const queryClient = new QueryClient()
 
 const MyApp = ({ Component, pageProps }) => {
   // if no layout, use DefaultLayout
@@ -19,14 +25,17 @@ const MyApp = ({ Component, pageProps }) => {
     >
       <ChakraProvider resetCSS theme={theme}>
         <ColorModeProvider options={{ useSystemColorMode: false }}>
-          <Layout>
-            {authenticated && (
-              <AuthenticatedComponent>
-                <Component {...pageProps} />
-              </AuthenticatedComponent>
-            )}
-            {!authenticated && <Component {...pageProps} />}
-          </Layout>
+          <QueryClientProvider client={queryClient}>
+            <Layout>
+              {authenticated && (
+                <AuthenticatedComponent>
+                  <Component {...pageProps} />
+                </AuthenticatedComponent>
+              )}
+              {!authenticated && <Component {...pageProps} />}
+              <ReactQueryDevtools />
+            </Layout>
+          </QueryClientProvider>
         </ColorModeProvider>
       </ChakraProvider>
     </Auth0Provider>

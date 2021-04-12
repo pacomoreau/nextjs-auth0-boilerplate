@@ -5,8 +5,9 @@ With :
 - chakra ui
 - eslint / prettier / jest
 - husky / lint-staged
+- react-final-form
 
-No server side code for the moment.  
+No getInitialProps, getServerSideProps.  
 
 ## Installation
 
