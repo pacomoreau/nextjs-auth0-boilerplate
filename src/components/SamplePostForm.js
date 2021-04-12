@@ -1,11 +1,7 @@
 import { Form } from "react-final-form"
 import { InputControl, SelectControl, TextareaControl } from "@/components/form-fields"
 import { Box, Button, ButtonGroup } from "@chakra-ui/react"
-import { useUsers } from "@/hooks/useUsers"
-
-const onSubmit = (values, mode) => {
-  console.log(mode, values)
-}
+import { useUsers } from "@/hooks/useUserQueries"
 
 const validateForm = (values) => {
   const errors = {}
@@ -20,12 +16,12 @@ const validateForm = (values) => {
   return errors
 }
 
-export const SamplePostForm = ({ mode = "create" }) => {
+export const SamplePostForm = ({ mode = "create", onSubmit, submitStatus }) => {
   const { data: users, status: usersStatus } = useUsers()
 
   return (
     <Form
-      onSubmit={(values) => onSubmit(values, mode)}
+      onSubmit={onSubmit}
       validate={validateForm}
       render={({ handleSubmit, errors, submitting, values }) => (
         <Box
@@ -47,8 +43,13 @@ export const SamplePostForm = ({ mode = "create" }) => {
             isLoading={usersStatus === "loading"}
           />
           <ButtonGroup spacing={4}>
-            <Button isLoading={submitting} loadingText="Submitting" type="submit">
-              Submit
+            <Button
+              isLoading={submitting || submitStatus === "loading"}
+              loadingText="Submitting"
+              type="submit"
+            >
+              {mode === "create" && "Create"}
+              {mode === "edit" && "Update"}
             </Button>
           </ButtonGroup>
           <Box as="pre" my={10}>
