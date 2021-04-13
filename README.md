@@ -5,7 +5,8 @@ With :
 - chakra ui
 - eslint / prettier / jest
 - husky / lint-staged
-- react-final-form
+- react-final-form / react-select
+- react-query / axios
 
 No getInitialProps, getServerSideProps.  
 
@@ -14,6 +15,10 @@ No getInitialProps, getServerSideProps.
 ```
 yarn install
 ```
+
+## Configuration
+
+Create a `.env.local` file from `.env.sample` & set the constants.
 
 ## Run in dev
 

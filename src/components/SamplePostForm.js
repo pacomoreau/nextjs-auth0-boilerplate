@@ -1,29 +1,62 @@
+import { useRouter } from "next/router"
 import { Form } from "react-final-form"
 import { InputControl, SelectControl, TextareaControl } from "@/components/form-fields"
-import { Box, Button, ButtonGroup } from "@chakra-ui/react"
+import { Box, Button, ButtonGroup, useToast } from "@chakra-ui/react"
 import { useUsers } from "@/hooks/useUserQueries"
+import { useCreatePost, useUpdatePost, useDeletePost } from "@/hooks/usePostMutations"
+
+const onSubmit = (values, createPost, updatePost, deletePost, toast, router) => {
+  if (values.action === "create") {
+    createPost(values, {
+      onSuccess: (post) => {
+        router.push(`/edit/${post.id}`)
+        toast({
+          title: "Post created !",
+          description: "Your post is successfully created.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+      },
+    })
+  }
+  if (values.action === "update") {
+    updatePost(values)
+  }
+  if (values.action === "delete") {
+    deletePost(values.id)
+  }
+}
 
 const validateForm = (values) => {
   const errors = {}
 
-  if (!values.title) {
-    errors.title = "Post title required."
-  }
-  if (!values.userId || values.userId.length === 0) {
-    errors.userId = "User required."
+  if (values.action !== "delete") {
+    if (!values.title) {
+      errors.title = "Post title required."
+    }
+    if (!values.userId || values.userId.length === 0) {
+      errors.userId = "User required."
+    }
   }
 
   return errors
 }
 
-export const SamplePostForm = ({ mode = "create", onSubmit, submitStatus }) => {
+export const SamplePostForm = ({ mode = "create" }) => {
+  const toast = useToast()
+  const router = useRouter()
   const { data: users, status: usersStatus } = useUsers()
+  const { mutate: createPost, status: createPostStatus } = useCreatePost()
+  const { mutate: updatePost, status: updatePostStatus } = useUpdatePost()
+  const { mutate: deletePost, status: deletePostStatus } = useDeletePost()
+  const status = mode === "create" ? createPostStatus : updatePostStatus || deletePostStatus
 
   return (
     <Form
-      onSubmit={onSubmit}
+      onSubmit={(values) => onSubmit(values, createPost, updatePost, deletePost, toast, router)}
       validate={validateForm}
-      render={({ handleSubmit, errors, submitting, values }) => (
+      render={({ handleSubmit, form, errors, submitting, values }) => (
         <Box
           as="form"
           p={4}
@@ -44,13 +77,28 @@ export const SamplePostForm = ({ mode = "create", onSubmit, submitStatus }) => {
           />
           <ButtonGroup spacing={4}>
             <Button
-              isLoading={submitting || submitStatus === "loading"}
+              isLoading={submitting || status === "loading"}
               loadingText="Submitting"
               type="submit"
+              onClick={() => {
+                form.change("action", mode)
+              }}
             >
               {mode === "create" && "Create"}
-              {mode === "edit" && "Update"}
+              {mode === "update" && "Update"}
             </Button>
+            {mode === "update" && (
+              <Button
+                isLoading={submitting || status === "loading"}
+                loadingText="Submitting"
+                type="submit"
+                onClick={() => {
+                  form.change("action", "delete")
+                }}
+              >
+                Delete
+              </Button>
+            )}
           </ButtonGroup>
           <Box as="pre" my={10}>
             {JSON.stringify(values, null, 2)}

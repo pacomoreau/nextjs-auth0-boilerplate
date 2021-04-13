@@ -1,5 +1,6 @@
+import Link from "next/link"
 import { useAuth0 } from "@auth0/auth0-react"
-import { Button, Flex, Text } from "@chakra-ui/react"
+import { Button, Link as ChakraLink, Flex, Text } from "@chakra-ui/react"
 import { DarkModeToggle } from "@/components/DarkModeToggle"
 import { LogoIcon } from "@/components/icons/LogoIcon"
 
@@ -9,7 +10,11 @@ export const Header = () => {
   return (
     <Flex width="100%" justifyContent="space-between" alignItems="center" py="1rem">
       <Flex flexGrow="1" alignItems="center">
-        <LogoIcon />
+        <Link href="/" passHref>
+          <ChakraLink>
+            <LogoIcon />
+          </ChakraLink>
+        </Link>
         <Text fontSize="xl" mx="1rem">
           Boilerplate
         </Text>

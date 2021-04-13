@@ -9,7 +9,7 @@ export const useCreatePost = () => {
   })
 }
 
-export const useSavePost = () => {
+export const useUpdatePost = () => {
   const queryClient = useQueryClient()
 
   return useMutation(
