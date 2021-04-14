@@ -43,19 +43,20 @@ const validateForm = (values) => {
   return errors
 }
 
-export const SamplePostForm = ({ mode = "create" }) => {
+export const SamplePostForm = ({ post = null }) => {
   const toast = useToast()
   const router = useRouter()
   const { data: users, status: usersStatus } = useUsers()
   const { mutate: createPost, status: createPostStatus } = useCreatePost()
   const { mutate: updatePost, status: updatePostStatus } = useUpdatePost()
   const { mutate: deletePost, status: deletePostStatus } = useDeletePost()
-  const status = mode === "create" ? createPostStatus : updatePostStatus || deletePostStatus
+  const status = post === null ? createPostStatus : updatePostStatus || deletePostStatus
 
   return (
     <Form
       onSubmit={(values) => onSubmit(values, createPost, updatePost, deletePost, toast, router)}
       validate={validateForm}
+      initialValues={post}
       render={({ handleSubmit, form, errors, submitting, values }) => (
         <Box
           as="form"
@@ -81,13 +82,13 @@ export const SamplePostForm = ({ mode = "create" }) => {
               loadingText="Submitting"
               type="submit"
               onClick={() => {
-                form.change("action", mode)
+                form.change("action", post ? "update" : "create")
               }}
             >
-              {mode === "create" && "Create"}
-              {mode === "update" && "Update"}
+              {!post && "Create"}
+              {post && "Update"}
             </Button>
-            {mode === "update" && (
+            {post && (
               <Button
                 isLoading={submitting || status === "loading"}
                 loadingText="Submitting"
