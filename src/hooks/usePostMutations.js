@@ -15,20 +15,23 @@ export const useUpdatePost = () => {
   return useMutation(
     (values) => axios.patch(`/posts/${values.id}`, values).then((res) => res.data),
     {
-      onMutate: (values) => {
-        const previousPost = queryClient.getQueryData(["post", values.id])
+      onMutate: async (values) => {
+        await queryClient.cancelQueries(["post", values.id])
 
-        queryClient.setQueryData(["post", values.id], (old) => ({
+        const previousValues = queryClient.getQueryData(["post", values.id])
+
+        queryClient.setQueryData("todos", (old) => ({
           ...old,
           ...values,
         }))
 
-        return () => queryClient.setQueryData(["post", values.id], previousPost)
+        return previousValues
       },
-      onError: (error, values, rollback) => rollback(),
-      onSuccess: async (values) => {
-        queryClient.refetchQueries("posts")
-        await queryClient.refetchQueries(["post", values.id])
+      onError: (previousValues) =>
+        queryClient.setQueryData(["post", previousValues.id], previousValues),
+      onSettled: (values) => {
+        queryClient.invalidateQueries("posts")
+        queryClient.invalidateQueries(["post", values.id])
       },
     }
   )

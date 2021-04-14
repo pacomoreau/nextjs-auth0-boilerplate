@@ -4,15 +4,18 @@ import { InputControl, SelectControl, TextareaControl } from "@/components/form-
 import { Box, Button, ButtonGroup, useToast } from "@chakra-ui/react"
 import { useUsers } from "@/hooks/useUserQueries"
 import { useCreatePost, useUpdatePost, useDeletePost } from "@/hooks/usePostMutations"
+import _ from "lodash"
 
 const onSubmit = (values, createPost, updatePost, deletePost, toast, router) => {
+  const postValues = _.omit(values, ["action"])
+
   if (values.action === "create") {
-    createPost(values, {
+    createPost(postValues, {
       onSuccess: (post) => {
         router.push(`/edit/${post.id}`)
         toast({
           title: "Post created !",
-          description: "Your post is successfully created.",
+          description: `Your post (id ${post.id}) has been created successfully.`,
           status: "success",
           duration: 9000,
           isClosable: true,
@@ -21,10 +24,31 @@ const onSubmit = (values, createPost, updatePost, deletePost, toast, router) => 
     })
   }
   if (values.action === "update") {
-    updatePost(values)
+    updatePost(postValues, {
+      onSuccess: (post) => {
+        toast({
+          title: "Post updated !",
+          description: `Your post (id ${post.id}) has been updated successfully.`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+      },
+    })
   }
   if (values.action === "delete") {
-    deletePost(values.id)
+    deletePost(postValues.id, {
+      onSuccess: () => {
+        router.push("/")
+        toast({
+          title: "Post deleted !",
+          description: `Your post (id ${postValues.id}) has been deleted successfully.`,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+      },
+    })
   }
 }
 
@@ -46,11 +70,12 @@ const validateForm = (values) => {
 export const SamplePostForm = ({ post = null }) => {
   const toast = useToast()
   const router = useRouter()
-  const { data: users, status: usersStatus } = useUsers()
-  const { mutate: createPost, status: createPostStatus } = useCreatePost()
-  const { mutate: updatePost, status: updatePostStatus } = useUpdatePost()
-  const { mutate: deletePost, status: deletePostStatus } = useDeletePost()
-  const status = post === null ? createPostStatus : updatePostStatus || deletePostStatus
+  const { data: users, isLoading: usersLoading } = useUsers()
+  const { mutate: createPost, isLoading: createPostLoading } = useCreatePost()
+  const { mutate: updatePost, isLoading: updatePostLoading } = useUpdatePost()
+  const { mutate: deletePost, isLoading: deletePostLoading } = useDeletePost()
+
+  const loading = post === null ? createPostLoading : updatePostLoading || deletePostLoading
 
   return (
     <Form
@@ -74,11 +99,12 @@ export const SamplePostForm = ({ post = null }) => {
             options={users}
             valueKey="id"
             labelKey="name"
-            isLoading={usersStatus === "loading"}
+            isLoading={usersLoading}
           />
           <ButtonGroup spacing={4}>
             <Button
-              isLoading={submitting || status === "loading"}
+              isLoading={(submitting || loading) && values.action !== "delete"}
+              isDisabled={loading && values.action === "delete"}
               loadingText="Submitting"
               type="submit"
               onClick={() => {
@@ -90,7 +116,8 @@ export const SamplePostForm = ({ post = null }) => {
             </Button>
             {post && (
               <Button
-                isLoading={submitting || status === "loading"}
+                isLoading={(submitting || loading) && values.action === "delete"}
+                isDisabled={loading && values.action !== "delete"}
                 loadingText="Submitting"
                 type="submit"
                 onClick={() => {
