@@ -1,15 +1,22 @@
+import Router from "next/router"
 import { Auth0Provider } from "@auth0/auth0-react"
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react"
 import { DefaultLayout } from "@/layouts/DefaultLayout"
 import { AuthenticatedComponent } from "@/components/AuthenticatedComponent"
+import "nprogress/nprogress.css" //styles of nprogress
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { initAxios } from "../../axios.config"
+import NProgress from "nprogress"
 import theme from "../theme"
 import _ from "lodash"
 
 initAxios()
 const queryClient = new QueryClient()
+
+Router.events.on("routeChangeStart", () => NProgress.start())
+Router.events.on("routeChangeComplete", () => NProgress.done())
+Router.events.on("routeChangeError", () => NProgress.done())
 
 const MyApp = ({ Component, pageProps }) => {
   // if no layout, use DefaultLayout
