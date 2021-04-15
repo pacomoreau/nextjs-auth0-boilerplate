@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import { Form } from "react-final-form"
 import { InputControl, SelectControl, TextareaControl } from "@/components/form-fields"
-import { Box, Button, ButtonGroup, useToast } from "@chakra-ui/react"
+import { Heading, Box, Button, ButtonGroup, useToast } from "@chakra-ui/react"
 import { useUsers } from "@/hooks/useUserQueries"
 import { useCreatePost, useUpdatePost, useDeletePost } from "@/hooks/usePostMutations"
 import _ from "lodash"
@@ -78,64 +78,63 @@ export const SamplePostForm = ({ post = null }) => {
   const loading = post === null ? createPostLoading : updatePostLoading || deletePostLoading
 
   return (
-    <Form
-      onSubmit={(values) => onSubmit(values, createPost, updatePost, deletePost, toast, router)}
-      validate={validateForm}
-      initialValues={post}
-      render={({ handleSubmit, form, errors, submitting, values }) => (
-        <Box
-          as="form"
-          p={4}
-          borderWidth="1px"
-          rounded="lg"
-          shadow="1px 1px 3px rgba(0,0,0,0.3)"
-          onSubmit={handleSubmit}
-        >
-          <InputControl name="title" label="Post title" />
-          <TextareaControl name="body" label="Post description" />
-          <SelectControl
-            name="userId"
-            label="Choose a user"
-            options={users}
-            valueKey="id"
-            labelKey="name"
-            isLoading={usersLoading}
-          />
-          <ButtonGroup spacing={4}>
-            <Button
-              isLoading={(submitting || loading) && values.action !== "delete"}
-              isDisabled={loading && values.action === "delete"}
-              loadingText="Submitting"
-              type="submit"
-              onClick={() => {
-                form.change("action", post ? "update" : "create")
-              }}
-            >
-              {!post && "Create"}
-              {post && "Update"}
-            </Button>
-            {post && (
+    <>
+      <Heading as="h1" size="xl">
+        {!post && "Create post"}
+        {post && `Edit post (id: ${post.id})`}
+      </Heading>
+      <Form
+        onSubmit={(values) => onSubmit(values, createPost, updatePost, deletePost, toast, router)}
+        validate={validateForm}
+        initialValues={post}
+        render={({ handleSubmit, form, errors, submitting, values }) => (
+          <Box as="form" p={4} rounded="lg" onSubmit={handleSubmit}>
+            <InputControl name="title" label="Post title" />
+            <TextareaControl name="body" label="Post description" />
+            <SelectControl
+              name="userId"
+              label="Choose a user"
+              options={users}
+              valueKey="id"
+              labelKey="name"
+              isLoading={usersLoading}
+            />
+            <ButtonGroup spacing={4}>
               <Button
-                isLoading={(submitting || loading) && values.action === "delete"}
-                isDisabled={loading && values.action !== "delete"}
+                isLoading={(submitting || loading) && values.action !== "delete"}
+                isDisabled={loading && values.action === "delete"}
                 loadingText="Submitting"
                 type="submit"
                 onClick={() => {
-                  form.change("action", "delete")
+                  form.change("action", post ? "update" : "create")
                 }}
               >
-                Delete
+                {!post && "Create"}
+                {post && "Update"}
               </Button>
-            )}
-          </ButtonGroup>
-          <Box as="pre" my={10}>
-            {JSON.stringify(values, null, 2)}
+              {post && (
+                <Button
+                  isLoading={(submitting || loading) && values.action === "delete"}
+                  isDisabled={loading && values.action !== "delete"}
+                  loadingText="Submitting"
+                  type="submit"
+                  onClick={() => {
+                    form.change("action", "delete")
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
+            </ButtonGroup>
+            <Box as="pre" my={10}>
+              {JSON.stringify(values, null, 2)}
+            </Box>
+            <Box as="pre" my={10}>
+              {JSON.stringify(errors, null, 2)}
+            </Box>
           </Box>
-          <Box as="pre" my={10}>
-            {JSON.stringify(errors, null, 2)}
-          </Box>
-        </Box>
-      )}
-    />
+        )}
+      />
+    </>
   )
 }
