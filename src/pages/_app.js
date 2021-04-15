@@ -12,7 +12,18 @@ import theme from "../theme"
 import _ from "lodash"
 
 initAxios()
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        if (error?.response?.status === 404 || error?.response?.status >= 500) {
+          return false // no retry for some error codes
+        }
+        return 3
+      },
+    },
+  },
+})
 
 Router.events.on("routeChangeStart", () => NProgress.start())
 Router.events.on("routeChangeComplete", () => NProgress.done())

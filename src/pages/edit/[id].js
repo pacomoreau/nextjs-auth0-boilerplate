@@ -3,10 +3,19 @@ import { useRouter } from "next/router"
 import { usePost } from "@/hooks/usePostQueries"
 import { Text } from "@chakra-ui/react"
 
-const Edit = () => {
+export const getServerSideProps = async (context) => {
+  console.log(context)
+  return {
+    props: { test: 123 },
+  }
+}
+
+const Edit = ({ test }) => {
   const router = useRouter()
   const { id } = router.query
   const { data, isLoading, isError, error } = usePost(id)
+
+  console.log(test)
 
   return (
     <>
